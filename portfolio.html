@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,57 +7,7 @@
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <!-- Three.js for 3D Background -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #030014;
-            color: white;
-            overflow-x: hidden;
-        }
-
-        h1, h2, h3, h4, h5, h6, .outfit {
-            font-family: 'Outfit', sans-serif;
-        }
-
-        /* Glassmorphism Utilities */
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .glass-card:hover {
-            transform: translateY(-8px);
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(0, 243, 255, 0.4);
-            box-shadow: 0 15px 40px 0 rgba(0, 243, 255, 0.15);
-        }
-
-        /* Scroll Animations */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
-        }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
     <script>
         tailwind.config = {
             theme: {
@@ -75,20 +25,27 @@
         }
     </script>
 </head>
-<body class="relative antialiased selection:bg-brand-cyan/30">
+<body class="relative antialiased selection:bg-brand-cyan/30 bg-[#02000a]">
     
-    <!-- Cosmos Background Canvas -->
-    <canvas id="cosmos-bg" class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none"></canvas>
+    <!-- Custom Cursor -->
+    <div id="custom-cursor" class="custom-cursor hidden md:block"></div>
+    <div id="cursor-trail" class="cursor-trail hidden md:block"></div>
+
+    <!-- Background accents -->
+    <div class="fixed top-0 left-0 w-full h-full pointer-events-none z-[-1] overflow-hidden">
+        <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-blue/10 rounded-full blur-[150px]"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-brand-purple/10 rounded-full blur-[150px]"></div>
+    </div>
 
     <!-- Navbar -->
-    <nav class="fixed w-full z-50 glass border-b-0 border-white/10 transition-all duration-300">
+    <nav class="fixed w-full z-50 glass-nav transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-bold outfit bg-gradient-to-r from-brand-cyan to-brand-blue bg-clip-text text-transparent">
+            <a href="index.html" class="text-2xl font-bold outfit bg-gradient-to-r from-brand-cyan to-brand-blue bg-clip-text text-transparent glow-text">
                 AL.
             </a>
             <div class="hidden md:flex gap-8 items-center">
                 <a href="index.html" class="text-sm font-medium text-white/70 hover:text-brand-cyan transition-colors">Home</a>
-                <a href="portfolio.html" class="text-sm font-medium text-white hover:text-brand-cyan transition-colors">Projects</a>
+                <a href="portfolio.html" class="text-sm font-medium text-brand-cyan transition-colors">Projects</a>
                 <a href="index.html#timeline" class="text-sm font-medium text-white/70 hover:text-brand-cyan transition-colors">Experience</a>
                 <a href="index.html#contact" class="text-sm font-medium text-white/70 hover:text-brand-cyan transition-colors">Contact</a>
             </div>
@@ -100,15 +57,15 @@
     </nav>
 
     <!-- Portfolio Section -->
-    <section class="min-h-screen pt-32 pb-24 px-6 relative">
+    <section class="min-h-screen pt-32 pb-24 px-6 relative z-10">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16 reveal">
-                <div class="inline-flex px-4 py-1.5 rounded-full glass mb-4 text-sm font-medium text-brand-purple border-brand-purple/20">
+                <div class="inline-flex px-4 py-1.5 rounded-full glass mb-4 text-sm font-medium text-brand-purple border-brand-purple/20 backdrop-blur-md">
                     <span class="flex items-center gap-2">
                         <i data-feather="code" class="w-4 h-4"></i> Selected Works
                     </span>
                 </div>
-                <h1 class="text-5xl md:text-6xl font-bold mb-6 outfit tracking-tight">My Portfolio</h1>
+                <h1 class="text-5xl md:text-6xl font-bold mb-6 outfit tracking-tight glow-text">My Portfolio</h1>
                 <p class="text-lg text-white/60 max-w-2xl mx-auto font-light leading-relaxed">
                     A showcase of my best work and projects across different domains, blending creative design with high-performance engineering.
                 </p>
@@ -117,87 +74,108 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mb-16">
                 <!-- Project 1 -->
-                <div class="glass-card rounded-3xl p-6 reveal">
-                    <div class="relative w-full h-64 rounded-2xl overflow-hidden mb-6 group">
-                        <div class="absolute inset-0 bg-brand-dark/20 group-hover:bg-transparent transition-colors duration-300 z-10"></div>
-                        <img src="http://static.photos/technology/640x360/1" alt="AI Tools Platform" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
+                <div class="glass-card rounded-[2rem] p-6 reveal group relative">
+                    <div class="project-card h-72 mb-6">
+                        <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800" alt="AI Tools Platform" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <div class="project-overlay">
+                            <div class="flex gap-4 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                                <a href="#" class="px-6 py-2 bg-brand-cyan text-brand-dark font-medium rounded-full hover:bg-white transition-colors flex items-center gap-2">
+                                    <i data-feather="external-link" class="w-4 h-4"></i> Live
+                                </a>
+                                <a href="#" class="px-6 py-2 glass text-white font-medium rounded-full hover:bg-white/20 transition-colors flex items-center gap-2">
+                                    <i data-feather="github" class="w-4 h-4"></i> Repo
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     <h3 class="text-2xl font-bold mb-3 outfit">AI Tools Platform</h3>
                     <p class="text-white/60 mb-6 line-clamp-3 font-light leading-relaxed">
                         A comprehensive platform for prompt engineering and LLM interaction design. 
                         Features real-time collaboration, version control for prompts, and performance analytics.
                     </p>
-                    <div class="flex flex-wrap gap-2 mb-6">
+                    <div class="flex flex-wrap gap-2">
                         <span class="px-3 py-1 rounded-full text-xs font-medium bg-brand-cyan/10 text-brand-cyan border border-brand-cyan/20">React</span>
                         <span class="px-3 py-1 rounded-full text-xs font-medium bg-brand-blue/10 text-brand-blue border border-brand-blue/20">Node.js</span>
-                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-brand-purple/10 text-brand-purple border border-brand-purple/20">AI/ML</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-brand-purple/10 text-brand-purple border border-brand-purple/20">Generative AI</span>
                     </div>
-                    <a href="#" class="inline-flex items-center gap-2 text-white font-medium hover:text-brand-cyan transition-colors">
-                        View Project <i data-feather="arrow-right" class="w-4 h-4"></i>
-                    </a>
                 </div>
 
                 <!-- Project 2 -->
-                <div class="glass-card rounded-3xl p-6 reveal">
-                    <div class="relative w-full h-64 rounded-2xl overflow-hidden mb-6 group">
-                        <div class="absolute inset-0 bg-brand-dark/20 group-hover:bg-transparent transition-colors duration-300 z-10"></div>
-                        <img src="http://static.photos/medical/640x360/2" alt="Telehealth Application" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
+                <div class="glass-card rounded-[2rem] p-6 reveal group relative">
+                    <div class="project-card h-72 mb-6">
+                        <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800" alt="Telehealth Application" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <div class="project-overlay">
+                            <div class="flex gap-4 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                                <a href="#" class="px-6 py-2 bg-brand-blue text-white font-medium rounded-full hover:bg-brand-cyan hover:text-brand-dark transition-colors flex items-center gap-2">
+                                    <i data-feather="external-link" class="w-4 h-4"></i> Live
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     <h3 class="text-2xl font-bold mb-3 outfit">Telehealth Platform</h3>
                     <p class="text-white/60 mb-6 line-clamp-3 font-light leading-relaxed">
                         HIPAA-compliant telehealth application with video consultations, 
                         prescription management, and patient health tracking.
                     </p>
-                    <div class="flex flex-wrap gap-2 mb-6">
+                    <div class="flex flex-wrap gap-2">
                         <span class="px-3 py-1 rounded-full text-xs font-medium bg-brand-cyan/10 text-brand-cyan border border-brand-cyan/20">Vue.js</span>
                         <span class="px-3 py-1 rounded-full text-xs font-medium bg-brand-blue/10 text-brand-blue border border-brand-blue/20">WebRTC</span>
-                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-brand-purple/10 text-brand-purple border border-brand-purple/20">Healthcare</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-brand-purple/10 text-brand-purple border border-brand-purple/20">AWS</span>
                     </div>
-                    <a href="#" class="inline-flex items-center gap-2 text-white font-medium hover:text-brand-cyan transition-colors">
-                        View Project <i data-feather="arrow-right" class="w-4 h-4"></i>
-                    </a>
                 </div>
 
                 <!-- Project 3 -->
-                <div class="glass-card rounded-3xl p-6 reveal">
-                    <div class="relative w-full h-64 rounded-2xl overflow-hidden mb-6 group">
-                        <div class="absolute inset-0 bg-brand-dark/20 group-hover:bg-transparent transition-colors duration-300 z-10"></div>
-                        <img src="http://static.photos/finance/640x360/3" alt="Fintech Dashboard" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
+                <div class="glass-card rounded-[2rem] p-6 reveal group relative">
+                    <div class="project-card h-72 mb-6">
+                        <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=800" alt="Fintech Dashboard" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <div class="project-overlay">
+                            <div class="flex gap-4 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                                <a href="#" class="px-6 py-2 bg-brand-purple text-white font-medium rounded-full hover:bg-brand-cyan hover:text-brand-dark transition-colors flex items-center gap-2">
+                                    <i data-feather="external-link" class="w-4 h-4"></i> Live
+                                </a>
+                                <a href="#" class="px-6 py-2 glass text-white font-medium rounded-full hover:bg-white/20 transition-colors flex items-center gap-2">
+                                    <i data-feather="github" class="w-4 h-4"></i> Repo
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     <h3 class="text-2xl font-bold mb-3 outfit">Fintech Dashboard</h3>
                     <p class="text-white/60 mb-6 line-clamp-3 font-light leading-relaxed">
                         Real-time financial dashboard for investment tracking, market analysis, 
                         and portfolio management with interactive data visualizations.
                     </p>
-                    <div class="flex flex-wrap gap-2 mb-6">
+                    <div class="flex flex-wrap gap-2">
                         <span class="px-3 py-1 rounded-full text-xs font-medium bg-brand-cyan/10 text-brand-cyan border border-brand-cyan/20">TypeScript</span>
                         <span class="px-3 py-1 rounded-full text-xs font-medium bg-brand-blue/10 text-brand-blue border border-brand-blue/20">D3.js</span>
                         <span class="px-3 py-1 rounded-full text-xs font-medium bg-brand-purple/10 text-brand-purple border border-brand-purple/20">Finance</span>
                     </div>
-                    <a href="#" class="inline-flex items-center gap-2 text-white font-medium hover:text-brand-cyan transition-colors">
-                        View Project <i data-feather="arrow-right" class="w-4 h-4"></i>
-                    </a>
                 </div>
 
                 <!-- Project 4 -->
-                <div class="glass-card rounded-3xl p-6 reveal">
-                    <div class="relative w-full h-64 rounded-2xl overflow-hidden mb-6 group">
-                        <div class="absolute inset-0 bg-brand-dark/20 group-hover:bg-transparent transition-colors duration-300 z-10"></div>
-                        <img src="http://static.photos/education/640x360/4" alt="Learning Platform" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
+                <div class="glass-card rounded-[2rem] p-6 reveal group relative">
+                    <div class="project-card h-72 mb-6">
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=800" alt="Learning Platform" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <div class="project-overlay">
+                            <div class="flex gap-4 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                                <a href="#" class="px-6 py-2 bg-brand-cyan text-brand-dark font-medium rounded-full hover:bg-white transition-colors flex items-center gap-2">
+                                    <i data-feather="external-link" class="w-4 h-4"></i> Live
+                                </a>
+                                <a href="#" class="px-6 py-2 glass text-white font-medium rounded-full hover:bg-white/20 transition-colors flex items-center gap-2">
+                                    <i data-feather="github" class="w-4 h-4"></i> Repo
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     <h3 class="text-2xl font-bold mb-3 outfit">Interactive Learning</h3>
                     <p class="text-white/60 mb-6 line-clamp-3 font-light leading-relaxed">
                         Gamified learning platform with progress tracking, interactive exercises, 
                         and personalized learning paths for different skill levels.
                     </p>
-                    <div class="flex flex-wrap gap-2 mb-6">
-                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-brand-cyan/10 text-brand-cyan border border-brand-cyan/20">React</span>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-brand-cyan/10 text-brand-cyan border border-brand-cyan/20">Next.js</span>
                         <span class="px-3 py-1 rounded-full text-xs font-medium bg-brand-blue/10 text-brand-blue border border-brand-blue/20">MongoDB</span>
                         <span class="px-3 py-1 rounded-full text-xs font-medium bg-brand-purple/10 text-brand-purple border border-brand-purple/20">Education</span>
                     </div>
-                    <a href="#" class="inline-flex items-center gap-2 text-white font-medium hover:text-brand-cyan transition-colors">
-                        View Project <i data-feather="arrow-right" class="w-4 h-4"></i>
-                    </a>
                 </div>
             </div>
 
@@ -210,167 +188,13 @@
         </div>
     </section>
 
-    <footer class="py-8 border-t border-white/10 glass mt-12 bg-transparent">
+    <footer class="py-8 border-t border-white/10 glass bg-[#02000a]">
         <div class="max-w-7xl mx-auto px-6 text-center text-white/50 text-sm">
             <p>&copy; <span id="year"></span> Aniket Lamba. Building the Future.</p>
         </div>
     </footer>
 
-    <!-- Scripts -->
-    <script>
-        // Feather Icons
-        feather.replace();
-        document.getElementById('year').textContent = new Date().getFullYear();
-
-        // Scroll Reveal Animation (Vanilla JS)
-        const revealElements = document.querySelectorAll('.reveal');
-        
-        const revealCallback = (entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    // Stop observing once animated
-                    observer.unobserve(entry.target);
-                }
-            });
-        };
-
-        const revealOptions = {
-            threshold: 0.1,
-            rootMargin: "0px 0px -50px 0px"
-        };
-
-        const revealObserver = new IntersectionObserver(revealCallback, revealOptions);
-        
-        revealElements.forEach(el => {
-            revealObserver.observe(el);
-        });
-    </script>
-
-    <!-- Three.js Cosmos Background Script -->
-    <script>
-        const canvas = document.getElementById('cosmos-bg');
-        
-        // Scene setup
-        const scene = new THREE.Scene();
-        // Fog for depth
-        scene.fog = new THREE.FogExp2(0x030014, 0.0015);
-
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-        camera.position.z = 400;
-
-        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // optimize performance
-
-        // Particle group
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 2000;
-        
-        const posArray = new Float32Array(particlesCount * 3);
-        const colorArray = new Float32Array(particlesCount * 3);
-
-        const colors = [
-            new THREE.Color('#00f3ff'), // neon cyan
-            new THREE.Color('#0077ff'), // electric blue
-            new THREE.Color('#b537f2'), // purple
-            new THREE.Color('#ffffff')  // white
-        ];
-
-        for(let i = 0; i < particlesCount * 3; i+=3) {
-            // Spread particles across a wide space
-            posArray[i] = (Math.random() - 0.5) * 2000;     // x
-            posArray[i+1] = (Math.random() - 0.5) * 2000;   // y
-            posArray[i+2] = (Math.random() - 0.5) * 2000;   // z
-
-            // Random colors from the palette
-            const randColor = colors[Math.floor(Math.random() * colors.length)];
-            colorArray[i] = randColor.r;
-            colorArray[i+1] = randColor.g;
-            colorArray[i+2] = randColor.b;
-        }
-
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
-
-        // Create material
-        const particlesMaterial = new THREE.PointsMaterial({
-            size: 3,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.8,
-            blending: THREE.AdditiveBlending // makes stars glow
-        });
-
-        // Generate circular texture for particles programmatically (no external image)
-        const generateCircleTexture = () => {
-            const canvasRender = document.createElement('canvas');
-            canvasRender.width = 32;
-            canvasRender.height = 32;
-            const context = canvasRender.getContext('2d');
-            
-            const gradient = context.createRadialGradient(16, 16, 0, 16, 16, 16);
-            gradient.addColorStop(0, 'rgba(255,255,255,1)');
-            gradient.addColorStop(0.2, 'rgba(255,255,255,0.8)');
-            gradient.addColorStop(1, 'rgba(0,0,0,0)');
-            
-            context.fillStyle = gradient;
-            context.fillRect(0, 0, 32, 32);
-            
-            const texture = new THREE.CanvasTexture(canvasRender);
-            return texture;
-        };
-
-        particlesMaterial.map = generateCircleTexture();
-
-        const particleMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-        scene.add(particleMesh);
-
-        // Interaction state
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetX = 0;
-        let targetY = 0;
-        const windowHalfX = window.innerWidth / 2;
-        const windowHalfY = window.innerHeight / 2;
-
-        document.addEventListener('mousemove', (event) => {
-            mouseX = (event.clientX - windowHalfX);
-            mouseY = (event.clientY - windowHalfY);
-        });
-
-        // Responsive handling
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        // Animation loop
-        const clock = new THREE.Clock();
-
-        const animate = () => {
-            requestAnimationFrame(animate);
-            const elapsedTime = clock.getElapsedTime();
-
-            targetX = mouseX * 0.001;
-            targetY = mouseY * 0.001;
-
-            // Slow natural rotation
-            particleMesh.rotation.y += 0.0005;
-            particleMesh.rotation.x += 0.0002;
-
-            // Subtle mouse parallax
-            particleMesh.rotation.y += 0.05 * (targetX - particleMesh.rotation.y);
-            particleMesh.rotation.x += 0.05 * (targetY - particleMesh.rotation.x);
-
-            // Floating effect
-            particleMesh.position.y = Math.sin(elapsedTime * 0.5) * 10;
-
-            renderer.render(scene, camera);
-        };
-
-        animate();
-    </script>
+    <!-- External Script -->
+    <script src="main.js"></script>
 </body>
 </html>
