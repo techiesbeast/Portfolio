@@ -1,78 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CareerJourney3D: Walk Through My Story</title>
+    <title>Aniket Lamba - Developer Portfolio</title>
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <!-- Three.js for 3D Background -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #030014;
-            color: white;
-            overflow-x: hidden;
-        }
-
-        h1, h2, h3, h4, h5, h6, .outfit {
-            font-family: 'Outfit', sans-serif;
-        }
-
-        /* Glassmorphism Utilities */
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-        }
-        
-        .glass-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(0, 243, 255, 0.3);
-            box-shadow: 0 8px 32px 0 rgba(0, 243, 255, 0.1);
-        }
-
-        /* Scroll Animations */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
-        }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Timeline specific */
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            height: 100%;
-            background: linear-gradient(to bottom, #00f3ff, #b537f2);
-            opacity: 0.5;
-        }
-        @media (max-width: 768px) {
-            .timeline::before {
-                left: 30px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
     <script>
         tailwind.config = {
             theme: {
@@ -92,19 +29,22 @@
 </head>
 <body class="relative antialiased selection:bg-brand-cyan/30">
     
-    <!-- Cosmos Background Canvas -->
-    <canvas id="cosmos-bg" class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none"></canvas>
+    <!-- Custom Cursor -->
+    <div id="custom-cursor" class="custom-cursor hidden md:block"></div>
+    <div id="cursor-trail" class="cursor-trail hidden md:block"></div>
 
     <!-- Navbar -->
-    <nav class="fixed w-full z-50 glass border-b-0 border-white/10 transition-all duration-300">
+    <nav class="fixed w-full z-50 glass-nav transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-bold outfit bg-gradient-to-r from-brand-cyan to-brand-blue bg-clip-text text-transparent">
+            <a href="index.html" class="text-2xl font-bold outfit bg-gradient-to-r from-brand-cyan to-brand-blue bg-clip-text text-transparent glow-text">
                 AL.
             </a>
             <div class="hidden md:flex gap-8 items-center">
-                <a href="index.html" class="text-sm font-medium text-white hover:text-brand-cyan transition-colors">Home</a>
+                <a href="#hero" class="text-sm font-medium text-brand-cyan transition-colors">Home</a>
+                <a href="#about" class="text-sm font-medium text-white/70 hover:text-brand-cyan transition-colors">About</a>
+                <a href="#skills" class="text-sm font-medium text-white/70 hover:text-brand-cyan transition-colors">Skills</a>
                 <a href="portfolio.html" class="text-sm font-medium text-white/70 hover:text-brand-cyan transition-colors">Projects</a>
-                <a href="index.html#timeline" class="text-sm font-medium text-white/70 hover:text-brand-cyan transition-colors">Experience</a>
+                <a href="#timeline" class="text-sm font-medium text-white/70 hover:text-brand-cyan transition-colors">Experience</a>
                 <a href="#contact" class="text-sm font-medium text-white/70 hover:text-brand-cyan transition-colors">Contact</a>
             </div>
             <!-- Mobile Menu Button -->
@@ -115,40 +55,210 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="min-h-screen flex items-center justify-center relative px-4 pt-20" id="home">
+    <section id="hero" class="relative w-full min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        <!-- Cosmos Background Canvas specific to Hero -->
+        <canvas id="cosmos-bg" class="absolute inset-0 w-full h-full pointer-events-auto" style="z-index: 0;"></canvas>
+        
         <!-- Glowing orb behind text -->
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-blue/20 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-brand-blue/20 rounded-full blur-[120px] pointer-events-none z-0"></div>
 
-        <div class="text-center z-10 max-w-4xl max-w-3xl reveal">
-            <div class="inline-flex px-4 py-1.5 rounded-full glass mb-6 text-sm font-medium text-brand-cyan border-brand-cyan/20">
+        <div class="text-center z-10 max-w-4xl px-4 reveal">
+            <div class="inline-flex px-4 py-1.5 rounded-full glass mb-6 text-sm font-medium text-brand-cyan border-brand-cyan/20 backdrop-blur-md">
                 <span class="flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-brand-cyan animate-pulse"></span>
                     Available for new opportunities
                 </span>
             </div>
             <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight outfit leading-tight">
-                ANIKET LAMBA
+                <span class="text-white">Hi, I'm </span><br />
+                <span class="typing-wrapper text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan via-brand-blue to-brand-purple glow-text">Aniket Lamba</span>
             </h1>
-            <p class="text-lg md:text-2xl text-white/60 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-                Walk through my professional story in an immersive <span class="text-brand-cyan font-medium">3D experience.</span> Building the future of digital interactions.
+            <p class="text-lg md:text-2xl text-white/70 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
+                I build <span class="text-brand-cyan font-medium">immersive digital experiences</span> and modern architectures. Welcome to my universe.
             </p>
             <div class="flex flex-wrap justify-center gap-4">
                 <a href="portfolio.html" class="group relative px-8 py-4 bg-transparent overflow-hidden rounded-full font-medium inline-flex items-center justify-center border border-brand-cyan/50 text-white hover:text-brand-dark transition-colors duration-300">
                     <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-brand-cyan to-brand-blue opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></span>
-                    <i data-feather="play" class="mr-2 w-5 h-5"></i>
-                    Start My Journey
+                    <i data-feather="monitor" class="mr-2 w-5 h-5"></i>
+                    View Projects
                 </a>
-                <a href="https://drive.google.com/file/d/1La_TRX8ZPm_6uLFCcz0yk6lsYR3T2VaD/view?usp=drive_link" class="glass px-8 py-4 rounded-full font-medium inline-flex items-center hover:bg-white/10 transition-colors">
-                    <i data-feather="download" class="mr-2 w-5 h-5"></i>
-                    Resume
+                <a href="Resume.html" class="glass px-8 py-4 rounded-full font-medium inline-flex items-center hover:bg-white/10 transition-colors">
+                    <i data-feather="file-text" class="mr-2 w-5 h-5"></i>
+                    View Resume
                 </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 relative overflow-hidden bg-[#02000a]">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <!-- Image Splite -->
+                <div class="reveal relative group">
+                    <div class="absolute -inset-2 bg-gradient-to-r from-brand-cyan to-brand-purple rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition duration-500"></div>
+                    <div class="relative glass-card rounded-3xl p-2 aspect-square max-w-md mx-auto overflow-hidden">
+                        <!-- Placeholder for Developer image, using abstract geometric or premium photo -->
+                        <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=640" alt="Aniket Lamba" class="w-full h-full object-cover rounded-2xl transform group-hover:scale-105 transition-transform duration-700 filter grayscale hover:grayscale-0">
+                        <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/80 to-transparent rounded-2xl"></div>
+                    </div>
+                </div>
+                
+                <!-- Text Split -->
+                <div class="reveal">
+                    <h2 class="text-4xl md:text-5xl font-bold mb-6 outfit">
+                        Engineering The <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan to-brand-purple">Future</span>
+                    </h2>
+                    <p class="text-lg text-white/70 mb-6 font-light leading-relaxed">
+                        I am a passionate software engineer and UI/UX designer dedicated to crafting seamless, elegant, and high-performance digital products. With a strong foundation in modern web technologies, I bridge the gap between design and scalable engineering.
+                    </p>
+                    <p class="text-lg text-white/70 mb-8 font-light leading-relaxed">
+                        Whether it's building complex AI toolings algorithms, or designing fluid interactive interfaces, I approach every problem with a cosmic mindset: boundless curiosity and a drive for the extraordinary.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="glass p-6 rounded-2xl border-l-2 border-l-brand-cyan">
+                            <h4 class="text-3xl font-bold outfit mb-2 text-brand-cyan">5+</h4>
+                            <p class="text-sm text-white/60">Years Experience</p>
+                        </div>
+                        <div class="glass p-6 rounded-2xl border-l-2 border-l-brand-purple">
+                            <h4 class="text-3xl font-bold outfit mb-2 text-brand-purple">40+</h4>
+                            <p class="text-sm text-white/60">Projects Completed</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-24 relative overflow-hidden bg-gradient-to-b from-[#02000a] to-brand-dark">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 outfit">Technical Arsenal</h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-brand-cyan to-brand-purple mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <!-- Design & Frontend Skills -->
+                <div class="space-y-8 reveal">
+                    <h3 class="text-2xl font-bold outfit mb-6 flex items-center gap-3">
+                        <i data-feather="layout" class="text-brand-cyan"></i> Frontend & Design
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-sm font-medium">React & Next.js</span>
+                            <span class="text-sm text-brand-cyan">95%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" data-width="95"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-sm font-medium">JavaScript / TypeScript</span>
+                            <span class="text-sm text-brand-cyan">90%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" data-width="90"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-sm font-medium">Tailwind CSS & Animations</span>
+                            <span class="text-sm text-brand-cyan">95%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" data-width="95"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-sm font-medium">Three.js & WebGL</span>
+                            <span class="text-sm text-brand-cyan">75%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" data-width="75"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backend & Architecture -->
+                <div class="space-y-8 reveal">
+                    <h3 class="text-2xl font-bold outfit mb-6 flex items-center gap-3">
+                        <i data-feather="server" class="text-brand-purple"></i> Backend & Architecture
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-sm font-medium">Node.js & Express</span>
+                            <span class="text-sm text-brand-purple">85%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" data-width="85" style="background: linear-gradient(90deg, #b537f2, #0077ff);"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-sm font-medium">Python & APIs</span>
+                            <span class="text-sm text-brand-purple">80%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" data-width="80" style="background: linear-gradient(90deg, #b537f2, #0077ff);"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-sm font-medium">Databases (SQL & NoSQL)</span>
+                            <span class="text-sm text-brand-purple">80%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" data-width="80" style="background: linear-gradient(90deg, #b537f2, #0077ff);"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-sm font-medium">Cloud & DevOps / CI/CD</span>
+                            <span class="text-sm text-brand-purple">70%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" data-width="70" style="background: linear-gradient(90deg, #b537f2, #0077ff);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tech Stack Icons -->
+            <div class="mt-20 flex flex-wrap justify-center gap-6 reveal">
+                <div class="glass w-16 h-16 rounded-2xl flex items-center justify-center hover:-translate-y-2 transition-transform border-white/10 hover:border-brand-cyan/50 shadow-[0_0_15px_rgba(0,243,255,0.1)] hover:shadow-[0_0_25px_rgba(0,243,255,0.3)]">
+                    <i data-feather="figma" class="w-8 h-8 text-white/80"></i>
+                </div>
+                <div class="glass w-16 h-16 rounded-2xl flex items-center justify-center hover:-translate-y-2 transition-transform border-white/10 hover:border-brand-cyan/50 shadow-[0_0_15px_rgba(0,243,255,0.1)] hover:shadow-[0_0_25px_rgba(0,243,255,0.3)]">
+                    <i data-feather="github" class="w-8 h-8 text-white/80"></i>
+                </div>
+                <div class="glass w-16 h-16 rounded-2xl flex items-center justify-center hover:-translate-y-2 transition-transform border-white/10 hover:border-brand-cyan/50 shadow-[0_0_15px_rgba(0,243,255,0.1)] hover:shadow-[0_0_25px_rgba(0,243,255,0.3)]">
+                    <i data-feather="terminal" class="w-8 h-8 text-white/80"></i>
+                </div>
+                <div class="glass w-16 h-16 rounded-2xl flex items-center justify-center hover:-translate-y-2 transition-transform border-white/10 hover:border-brand-cyan/50 shadow-[0_0_15px_rgba(0,243,255,0.1)] hover:shadow-[0_0_25px_rgba(0,243,255,0.3)]">
+                    <i data-feather="database" class="w-8 h-8 text-white/80"></i>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Career Timeline -->
     <section class="py-24 relative" id="timeline">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <!-- Floating orb -->
+        <div class="absolute left-0 top-1/3 w-[300px] h-[300px] bg-brand-purple/10 rounded-full blur-[100px] pointer-events-none z-0"></div>
+
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
             <div class="text-center mb-20 reveal">
                 <h2 class="text-4xl md:text-5xl font-bold mb-4 outfit">Career Timeline</h2>
                 <div class="w-24 h-1 bg-gradient-to-r from-brand-cyan to-brand-blue mx-auto rounded-full"></div>
@@ -265,12 +375,12 @@
     </section>
 
     <!-- Contact Section -->
-    <section class="py-24 relative overflow-hidden" id="contact">
+    <section class="py-24 relative overflow-hidden bg-gradient-to-t from-[#02000a] to-brand-dark" id="contact">
         <!-- Background accent -->
-        <div class="absolute right-0 bottom-0 w-1/2 h-1/2 bg-brand-purple/10 blur-[120px] rounded-full pointer-events-none"></div>
+        <div class="absolute right-0 bottom-0 w-[500px] h-[500px] bg-brand-purple/10 blur-[120px] rounded-full pointer-events-none"></div>
 
         <div class="max-w-4xl mx-auto px-6 text-center reveal">
-            <h2 class="text-4xl md:text-5xl font-bold mb-6 outfit">Let's Connect</h2>
+            <h2 class="text-4xl md:text-5xl font-bold mb-6 outfit glow-text">Let's Connect</h2>
             <p class="text-lg text-white/70 mb-12 max-w-2xl mx-auto">
                 Ready to create something amazing together? Whether it's a project, a job opportunity, or just a chat, I'm always open to talking about futuristic tech and design.
             </p>
@@ -284,188 +394,21 @@
                     <i data-feather="github" class="w-5 h-5"></i>
                     <span>GitHub</span>
                 </a>
-                <a href="https://drive.google.com/file/d/1La_TRX8ZPm_6uLFCcz0yk6lsYR3T2VaD/view?usp=drive_link" class="glass-card px-8 py-4 rounded-xl flex items-center gap-3 hover:border-brand-cyan/50 hover:text-brand-cyan transition-all duration-300 border-brand-cyan/30 bg-brand-cyan/5">
-                    <i data-feather="download" class="w-5 h-5"></i>
+                <a href="Resume.html" class="glass-card px-8 py-4 rounded-xl flex items-center gap-3 hover:border-brand-cyan/50 hover:text-brand-cyan transition-all duration-300 border-brand-cyan/30 bg-brand-cyan/5">
+                    <i data-feather="file-text" class="w-5 h-5"></i>
                     <span>Resume</span>
                 </a>
             </div>
         </div>
     </section>
 
-    <footer class="py-8 border-t border-white/10 glass">
+    <footer class="py-8 border-t border-white/10 glass bg-[#02000a]">
         <div class="max-w-7xl mx-auto px-6 text-center text-white/50 text-sm">
             <p>&copy; <span id="year"></span> Aniket Lamba. Building the Future.</p>
         </div>
     </footer>
 
-    <!-- Scripts -->
-    <script>
-        // Feather Icons
-        feather.replace();
-        document.getElementById('year').textContent = new Date().getFullYear();
-
-        // Smooth Scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                const target = document.querySelector(targetId);
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
-
-        // Scroll Reveal Animation (Vanilla JS)
-        const revealElements = document.querySelectorAll('.reveal');
-        
-        const revealCallback = (entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    // Stop observing once animated
-                    observer.unobserve(entry.target);
-                }
-            });
-        };
-
-        const revealOptions = {
-            threshold: 0.1,
-            rootMargin: "0px 0px -50px 0px"
-        };
-
-        const revealObserver = new IntersectionObserver(revealCallback, revealOptions);
-        
-        revealElements.forEach(el => {
-            revealObserver.observe(el);
-        });
-    </script>
-
-    <!-- Three.js Cosmos Background Script -->
-    <script>
-        const canvas = document.getElementById('cosmos-bg');
-        
-        // Scene setup
-        const scene = new THREE.Scene();
-        // Fog for depth
-        scene.fog = new THREE.FogExp2(0x030014, 0.0015);
-
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-        camera.position.z = 400;
-
-        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // optimize performance
-
-        // Particle group
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 2000;
-        
-        const posArray = new Float32Array(particlesCount * 3);
-        const colorArray = new Float32Array(particlesCount * 3);
-
-        const colors = [
-            new THREE.Color('#00f3ff'), // neon cyan
-            new THREE.Color('#0077ff'), // electric blue
-            new THREE.Color('#b537f2'), // purple
-            new THREE.Color('#ffffff')  // white
-        ];
-
-        for(let i = 0; i < particlesCount * 3; i+=3) {
-            // Spread particles across a wide space
-            posArray[i] = (Math.random() - 0.5) * 2000;     // x
-            posArray[i+1] = (Math.random() - 0.5) * 2000;   // y
-            posArray[i+2] = (Math.random() - 0.5) * 2000;   // z
-
-            // Random colors from the palette
-            const randColor = colors[Math.floor(Math.random() * colors.length)];
-            colorArray[i] = randColor.r;
-            colorArray[i+1] = randColor.g;
-            colorArray[i+2] = randColor.b;
-        }
-
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
-
-        // Create material
-        const particlesMaterial = new THREE.PointsMaterial({
-            size: 3,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.8,
-            blending: THREE.AdditiveBlending // makes stars glow
-        });
-
-        // Generate circular texture for particles programmatically (no external image)
-        const generateCircleTexture = () => {
-            const canvasRender = document.createElement('canvas');
-            canvasRender.width = 32;
-            canvasRender.height = 32;
-            const context = canvasRender.getContext('2d');
-            
-            const gradient = context.createRadialGradient(16, 16, 0, 16, 16, 16);
-            gradient.addColorStop(0, 'rgba(255,255,255,1)');
-            gradient.addColorStop(0.2, 'rgba(255,255,255,0.8)');
-            gradient.addColorStop(1, 'rgba(0,0,0,0)');
-            
-            context.fillStyle = gradient;
-            context.fillRect(0, 0, 32, 32);
-            
-            const texture = new THREE.CanvasTexture(canvasRender);
-            return texture;
-        };
-
-        particlesMaterial.map = generateCircleTexture();
-
-        const particleMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-        scene.add(particleMesh);
-
-        // Interaction state
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetX = 0;
-        let targetY = 0;
-        const windowHalfX = window.innerWidth / 2;
-        const windowHalfY = window.innerHeight / 2;
-
-        document.addEventListener('mousemove', (event) => {
-            mouseX = (event.clientX - windowHalfX);
-            mouseY = (event.clientY - windowHalfY);
-        });
-
-        // Responsive handling
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        // Animation loop
-        const clock = new THREE.Clock();
-
-        const animate = () => {
-            requestAnimationFrame(animate);
-            const elapsedTime = clock.getElapsedTime();
-
-            targetX = mouseX * 0.001;
-            targetY = mouseY * 0.001;
-
-            // Slow natural rotation
-            particleMesh.rotation.y += 0.0005;
-            particleMesh.rotation.x += 0.0002;
-
-            // Subtle mouse parallax
-            particleMesh.rotation.y += 0.05 * (targetX - particleMesh.rotation.y);
-            particleMesh.rotation.x += 0.05 * (targetY - particleMesh.rotation.x);
-
-            // Floating effect
-            particleMesh.position.y = Math.sin(elapsedTime * 0.5) * 10;
-
-            renderer.render(scene, camera);
-        };
-
-        animate();
-    </script>
+    <!-- External Script -->
+    <script src="main.js"></script>
 </body>
 </html>
