@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,72 +7,7 @@
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <!-- Three.js for 3D Background -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #030014;
-            color: white;
-            overflow-x: hidden;
-        }
-
-        h1, h2, h3, h4, h5, h6, .outfit {
-            font-family: 'Outfit', sans-serif;
-        }
-
-        /* Glassmorphism Utilities */
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-        }
-        
-        .glass-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(0, 243, 255, 0.3);
-            box-shadow: 0 8px 32px 0 rgba(0, 243, 255, 0.1);
-        }
-
-        /* Scroll Animations */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
-        }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Timeline specific */
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            height: 100%;
-            background: linear-gradient(to bottom, #00f3ff, #b537f2);
-            opacity: 0.5;
-        }
-        @media (max-width: 768px) {
-            .timeline::before {
-                left: 30px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
     <script>
         tailwind.config = {
             theme: {
@@ -90,22 +25,29 @@
         }
     </script>
 </head>
-<body class="relative antialiased selection:bg-brand-cyan/30">
+<body class="relative antialiased selection:bg-brand-cyan/30 bg-[#02000a]">
     
-    <!-- Cosmos Background Canvas -->
-    <canvas id="cosmos-bg" class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none"></canvas>
+    <!-- Custom Cursor -->
+    <div id="custom-cursor" class="custom-cursor hidden md:block"></div>
+    <div id="cursor-trail" class="cursor-trail hidden md:block"></div>
+
+    <!-- Background accents -->
+    <div class="fixed top-0 left-0 w-full h-full pointer-events-none z-[-1] overflow-hidden">
+        <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-cyan/10 rounded-full blur-[150px]"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-brand-blue/10 rounded-full blur-[150px]"></div>
+    </div>
 
     <!-- Navbar -->
-    <nav class="fixed w-full z-50 glass border-b-0 border-white/10 transition-all duration-300">
+    <nav class="fixed w-full z-50 glass-nav transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-bold outfit bg-gradient-to-r from-brand-cyan to-brand-blue bg-clip-text text-transparent">
+            <a href="index.html" class="text-2xl font-bold outfit bg-gradient-to-r from-brand-cyan to-brand-blue bg-clip-text text-transparent glow-text">
                 AL.
             </a>
             <div class="hidden md:flex gap-8 items-center">
-                <a href="index.html" class="text-sm font-medium text-white hover:text-brand-cyan transition-colors">Home</a>
+                <a href="index.html" class="text-sm font-medium text-white/70 hover:text-brand-cyan transition-colors">Home</a>
                 <a href="portfolio.html" class="text-sm font-medium text-white/70 hover:text-brand-cyan transition-colors">Projects</a>
                 <a href="index.html#timeline" class="text-sm font-medium text-white/70 hover:text-brand-cyan transition-colors">Experience</a>
-                <a href="#contact" class="text-sm font-medium text-white/70 hover:text-brand-cyan transition-colors">Contact</a>
+                <a href="index.html#contact" class="text-sm font-medium text-white/70 hover:text-brand-cyan transition-colors">Contact</a>
             </div>
             <!-- Mobile Menu Button -->
             <button class="md:hidden text-white/70 hover:text-white">
@@ -114,363 +56,131 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="min-h-screen flex items-center justify-center relative px-4 pt-20" id="home">
-        <!-- Glowing orb behind text -->
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-blue/20 rounded-full blur-[100px] pointer-events-none"></div>
-
-        <div class="text-center z-10 max-w-4xl max-w-3xl reveal">
-            <div class="inline-flex px-4 py-1.5 rounded-full glass mb-6 text-sm font-medium text-brand-cyan border-brand-cyan/20">
-                <span class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-brand-cyan animate-pulse"></span>
-                    Interactive Resume
-                </span>
-            </div>
-            <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight outfit leading-tight">
-                Career Journey 3D
-            </h1>
-            <p class="text-lg md:text-2xl text-white/60 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-                Walk through my professional story in an immersive <span class="text-brand-cyan font-medium">3D experience.</span>
-            </p>
-            <div class="flex flex-wrap justify-center gap-4">
-                <button onclick="startExperience()" class="group relative px-8 py-4 bg-transparent overflow-hidden rounded-full font-medium inline-flex items-center justify-center border border-brand-cyan/50 text-white hover:text-brand-dark transition-colors duration-300">
-                    <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-brand-cyan to-brand-blue opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></span>
-                    <i data-feather="play" class="mr-2 w-5 h-5"></i>
-                    Start My Journey
-                </button>
-                <a href="/resume.pdf" class="glass px-8 py-4 rounded-full font-medium inline-flex items-center hover:bg-white/10 transition-colors">
-                    <i data-feather="download" class="mr-2 w-5 h-5"></i>
-                    Download PDF
-                </a>
-            </div>
+    <!-- Resume Header -->
+    <section class="pt-32 pb-16 px-6 relative z-10 text-center reveal">
+        <div class="inline-flex px-4 py-1.5 rounded-full glass mb-6 text-sm font-medium text-brand-cyan border-brand-cyan/20">
+            <span class="flex items-center gap-2">
+                <i data-feather="file-text" class="w-4 h-4"></i> Detailed Curriculum Vitae
+            </span>
         </div>
+        <h1 class="text-5xl md:text-6xl font-bold mb-6 tracking-tight outfit glow-text">
+            My Resume
+        </h1>
+        <p class="text-lg text-white/60 mb-8 max-w-2xl mx-auto font-light leading-relaxed">
+            A comprehensive overview of my professional experience, education, and technical skills.
+        </p>
+        <a href="/resume.pdf" download class="group relative px-8 py-4 bg-transparent overflow-hidden rounded-full font-medium inline-flex items-center justify-center border border-brand-cyan/50 text-white hover:text-brand-dark transition-colors duration-300">
+            <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-brand-cyan to-brand-blue opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></span>
+            <i data-feather="download" class="mr-2 w-5 h-5"></i>
+            Download PDF version
+        </a>
     </section>
 
-    <!-- Career Timeline -->
-    <section class="py-24 relative" id="timeline">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6">
-            <div class="text-center mb-20 reveal">
-                <h2 class="text-4xl md:text-5xl font-bold mb-4 outfit">My Career Timeline</h2>
-                <div class="w-24 h-1 bg-gradient-to-r from-brand-cyan to-brand-blue mx-auto rounded-full"></div>
+    <!-- Detailed Resume Content -->
+    <section class="max-w-4xl mx-auto px-6 pb-24 relative z-10">
+        
+        <!-- Experience -->
+        <h2 class="text-3xl font-bold mb-8 outfit border-b border-white/10 pb-4 flex items-center gap-3 reveal">
+            <i data-feather="briefcase" class="text-brand-cyan"></i> Professional Experience
+        </h2>
+        
+        <div class="space-y-12 mb-16">
+            <div class="reveal glass-card p-8 rounded-3xl">
+                <div class="flex flex-wrap justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-2xl font-bold outfit">Senior Designer, AI Tools</h3>
+                        <div class="text-brand-cyan font-medium">Acme Corp &middot; San Francisco</div>
+                    </div>
+                    <div class="text-white/50 text-sm font-medium bg-white/5 px-3 py-1 rounded-full border border-white/10">2023 – Present</div>
+                </div>
+                <ul class="space-y-3 mt-6">
+                    <li class="flex items-start gap-3 text-white/70">
+                        <i data-feather="check-circle" class="w-5 h-5 text-brand-purple shrink-0 mt-0.5"></i>
+                        <span>Led the UX/UI design of an enterprise prompt engineering platform, increasing user productivity by 40%.</span>
+                    </li>
+                    <li class="flex items-start gap-3 text-white/70">
+                        <i data-feather="check-circle" class="w-5 h-5 text-brand-purple shrink-0 mt-0.5"></i>
+                        <span>Spearheaded generative AI interfaces with real-time editing and version control mechanisms.</span>
+                    </li>
+                    <li class="flex items-start gap-3 text-white/70">
+                        <i data-feather="check-circle" class="w-5 h-5 text-brand-purple shrink-0 mt-0.5"></i>
+                        <span>Developed a cohesive internal design system using React and Tailwind CSS.</span>
+                    </li>
+                </ul>
             </div>
 
-            <div class="timeline relative max-w-4xl mx-auto">
-                <!-- Current Role -->
-                <div class="relative w-full md:w-[45%] md:left-[55%] mb-16 pl-14 md:pl-0 reveal">
-                    <!-- Dot -->
-                    <div class="absolute left-[30px] md:left-[-11%] top-6 w-4 h-4 rounded-full bg-brand-cyan shadow-[0_0_15px_#00f3ff] transform -translate-x-[50%] z-10"></div>
-                    <div class="glass-card p-8 rounded-2xl transition-all duration-300">
-                        <div class="text-brand-cyan font-semibold text-lg mb-2">2023–Now</div>
-                        <h3 class="text-2xl font-bold mb-2 outfit">Senior Designer, AI Tools</h3>
-                        <div class="text-white/60 mb-4 flex items-center gap-2">
-                            <i data-feather="map-pin" class="w-4 h-4"></i> San Francisco
-                        </div>
-                        <ul class="space-y-3">
-                            <li class="flex items-start gap-3 text-white/80">
-                                <i data-feather="check-circle" class="w-5 h-5 text-brand-purple shrink-0 mt-0.5"></i>
-                                <span>LLM UX patterns research & discovery</span>
-                            </li>
-                            <li class="flex items-start gap-3 text-white/80">
-                                <i data-feather="check-circle" class="w-5 h-5 text-brand-purple shrink-0 mt-0.5"></i>
-                                <span>Prompt engineering tooling development</span>
-                            </li>
-                            <li class="flex items-start gap-3 text-white/80">
-                                <i data-feather="check-circle" class="w-5 h-5 text-brand-purple shrink-0 mt-0.5"></i>
-                                <span>AI-human interaction design optimization</span>
-                            </li>
-                        </ul>
+            <div class="reveal glass-card p-8 rounded-3xl">
+                <div class="flex flex-wrap justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-2xl font-bold outfit">Product Design Lead, HealthTech</h3>
+                        <div class="text-brand-blue font-medium">MediCare Digital &middot; Remote</div>
                     </div>
+                    <div class="text-white/50 text-sm font-medium bg-white/5 px-3 py-1 rounded-full border border-white/10">2019 – 2022</div>
                 </div>
+                <ul class="space-y-3 mt-6">
+                    <li class="flex items-start gap-3 text-white/70">
+                        <i data-feather="check-circle" class="w-5 h-5 text-brand-blue shrink-0 mt-0.5"></i>
+                        <span>Launched a zero-to-one telehealth application serving over 1M patients.</span>
+                    </li>
+                    <li class="flex items-start gap-3 text-white/70">
+                        <i data-feather="check-circle" class="w-5 h-5 text-brand-blue shrink-0 mt-0.5"></i>
+                        <span>Designed complex clinical workflows in compliance with HIPAA guidelines, working closely with engineering constraints.</span>
+                    </li>
+                    <li class="flex items-start gap-3 text-white/70">
+                        <i data-feather="check-circle" class="w-5 h-5 text-brand-blue shrink-0 mt-0.5"></i>
+                        <span>Mentored a high-performing team of 5 product designers.</span>
+                    </li>
+                </ul>
+            </div>
 
-                <!-- Lead Role -->
-                <div class="relative w-full md:w-[45%] md:left-0 mb-16 pl-14 md:pl-0 reveal">
-                    <div class="absolute left-[30px] md:left-[111%] top-6 w-4 h-4 rounded-full bg-brand-blue shadow-[0_0_15px_#0077ff] transform -translate-x-[50%] z-10"></div>
-                    <div class="glass-card p-8 rounded-2xl transition-all duration-300">
-                        <div class="text-brand-cyan font-semibold text-lg mb-2">2019–2022</div>
-                        <h3 class="text-2xl font-bold mb-2 outfit">Product Design Lead, HealthTech</h3>
-                        <div class="text-white/60 mb-4 flex items-center gap-2">
-                            <i data-feather="map-pin" class="w-4 h-4"></i> Remote
-                        </div>
-                        <ul class="space-y-3">
-                            <li class="flex items-start gap-3 text-white/80">
-                                <i data-feather="check-circle" class="w-5 h-5 text-brand-blue shrink-0 mt-0.5"></i>
-                                <span>Launched telehealth application from zero to one</span>
-                            </li>
-                            <li class="flex items-start gap-3 text-white/80">
-                                <i data-feather="check-circle" class="w-5 h-5 text-brand-blue shrink-0 mt-0.5"></i>
-                                <span>Designed HIPAA compliant clinical workflows</span>
-                            </li>
-                            <li class="flex items-start gap-3 text-white/80">
-                                <i data-feather="check-circle" class="w-5 h-5 text-brand-blue shrink-0 mt-0.5"></i>
-                                <span>Team leadership & mentorship for 5 designers</span>
-                            </li>
-                        </ul>
+            <div class="reveal glass-card p-8 rounded-3xl">
+                <div class="flex flex-wrap justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-2xl font-bold outfit">UX Designer</h3>
+                        <div class="text-brand-cyan font-medium">FintechCo &middot; New York City</div>
                     </div>
+                    <div class="text-white/50 text-sm font-medium bg-white/5 px-3 py-1 rounded-full border border-white/10">2016 – 2018</div>
                 </div>
-
-                <!-- First Job -->
-                <div class="relative w-full md:w-[45%] md:left-[55%] mb-16 pl-14 md:pl-0 reveal">
-                    <div class="absolute left-[30px] md:left-[-11%] top-6 w-4 h-4 rounded-full bg-brand-cyan shadow-[0_0_15px_#00f3ff] transform -translate-x-[50%] z-10"></div>
-                    <div class="glass-card p-8 rounded-2xl transition-all duration-300">
-                        <div class="text-brand-cyan font-semibold text-lg mb-2">2016–2018</div>
-                        <h3 class="text-2xl font-bold mb-2 outfit">UX Designer, FintechCo</h3>
-                        <div class="text-white/60 mb-4 flex items-center gap-2">
-                            <i data-feather="map-pin" class="w-4 h-4"></i> New York City
-                        </div>
-                        <ul class="space-y-3">
-                            <li class="flex items-start gap-3 text-white/80">
-                                <i data-feather="check-circle" class="w-5 h-5 text-brand-purple shrink-0 mt-0.5"></i>
-                                <span>Redesigned onboarding flow leading to +22% conversion</span>
-                            </li>
-                            <li class="flex items-start gap-3 text-white/80">
-                                <i data-feather="check-circle" class="w-5 h-5 text-brand-purple shrink-0 mt-0.5"></i>
-                                <span>Led component-based design system implementation</span>
-                            </li>
-                            <li class="flex items-start gap-3 text-white/80">
-                                <i data-feather="check-circle" class="w-5 h-5 text-brand-purple shrink-0 mt-0.5"></i>
-                                <span>Championed mobile-first approach internally</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Education -->
-                <div class="relative w-full md:w-[45%] md:left-0 mb-16 pl-14 md:pl-0 reveal">
-                    <div class="absolute left-[30px] md:left-[111%] top-6 w-4 h-4 rounded-full bg-brand-blue shadow-[0_0_15px_#0077ff] transform -translate-x-[50%] z-10"></div>
-                    <div class="glass-card p-8 rounded-2xl transition-all duration-300">
-                        <div class="text-brand-cyan font-semibold text-lg mb-2">2012–2016</div>
-                        <h3 class="text-2xl font-bold mb-2 outfit">B.S. Human-Computer Interaction</h3>
-                        <div class="text-white/60 mb-4 flex items-center gap-2">
-                            <i data-feather="map-pin" class="w-4 h-4"></i> Carnegie Mellon University
-                        </div>
-                        <ul class="space-y-3">
-                            <li class="flex items-start gap-3 text-white/80">
-                                <i data-feather="check-circle" class="w-5 h-5 text-brand-blue shrink-0 mt-0.5"></i>
-                                <span>Dean's List Honors for Academic Excellence</span>
-                            </li>
-                            <li class="flex items-start gap-3 text-white/80">
-                                <i data-feather="check-circle" class="w-5 h-5 text-brand-blue shrink-0 mt-0.5"></i>
-                                <span>Lead developer for AR Capstone Project</span>
-                            </li>
-                            <li class="flex items-start gap-3 text-white/80">
-                                <i data-feather="check-circle" class="w-5 h-5 text-brand-blue shrink-0 mt-0.5"></i>
-                                <span>Human-Centered Design Minor Focus</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
+                <ul class="space-y-3 mt-6">
+                    <li class="flex items-start gap-3 text-white/70">
+                        <i data-feather="check-circle" class="w-5 h-5 text-brand-cyan shrink-0 mt-0.5"></i>
+                        <span>Redesigned onboarding flows resulting in a 22% increase in account conversion rates.</span>
+                    </li>
+                    <li class="flex items-start gap-3 text-white/70">
+                        <i data-feather="check-circle" class="w-5 h-5 text-brand-cyan shrink-0 mt-0.5"></i>
+                        <span>Championed mobile-first approach for legacy dashboards, dramatically improving user satisfaction on mobile devices.</span>
+                    </li>
+                </ul>
             </div>
         </div>
-    </section>
 
-    <!-- Contact Section -->
-    <section class="py-24 relative overflow-hidden" id="contact">
-        <!-- Background accent -->
-        <div class="absolute right-0 bottom-0 w-1/2 h-1/2 bg-brand-purple/10 blur-[120px] rounded-full pointer-events-none"></div>
-
-        <div class="max-w-4xl mx-auto px-6 text-center reveal">
-            <h2 class="text-4xl md:text-5xl font-bold mb-6 outfit">Let's Connect</h2>
-            <p class="text-lg text-white/70 mb-12 max-w-2xl mx-auto">
-                Ready to create something amazing together? Whether it's a project, a job opportunity, or just a chat, I'm always open to talking about futuristic tech and design.
-            </p>
-            
-            <div class="flex flex-wrap justify-center gap-6">
-                <a href="mailto:lamba.docs21@gmail.com" class="glass-card px-8 py-4 rounded-xl flex items-center gap-3 hover:border-brand-cyan/50 hover:text-brand-cyan transition-all duration-300">
-                    <i data-feather="mail" class="w-5 h-5"></i>
-                    <span>Email Me</span>
-                </a>
-                <a href="https://github.com/alex" target="_blank" class="glass-card px-8 py-4 rounded-xl flex items-center gap-3 hover:border-brand-cyan/50 hover:text-brand-cyan transition-all duration-300">
-                    <i data-feather="github" class="w-5 h-5"></i>
-                    <span>GitHub</span>
-                </a>
-                <a href="/resume.pdf" class="glass-card px-8 py-4 rounded-xl flex items-center gap-3 hover:border-brand-cyan/50 hover:text-brand-cyan transition-all duration-300 border-brand-cyan/30 bg-brand-cyan/5">
-                    <i data-feather="download" class="w-5 h-5"></i>
-                    <span>Resume PDF</span>
-                </a>
+        <!-- Education -->
+        <h2 class="text-3xl font-bold mb-8 outfit border-b border-white/10 pb-4 flex items-center gap-3 reveal">
+            <i data-feather="book-open" class="text-brand-purple"></i> Education
+        </h2>
+        
+        <div class="space-y-8 mb-16">
+            <div class="reveal glass p-8 rounded-3xl">
+                <div class="flex flex-wrap justify-between items-start mb-2">
+                    <h3 class="text-xl font-bold outfit">B.Tech Electronics & Communication Engineering</h3>
+                    <div class="text-white/50 text-sm font-medium bg-white/5 px-3 py-1 rounded-full border border-white/10">2017 – 2021</div>
+                </div>
+                <div class="text-brand-purple font-medium mb-4">Indira Gandhi University</div>
+                <p class="text-white/70 text-sm leading-relaxed">
+                    Graduated with Dean's List Honors. Minor focus in Human-Centered Design. Led development on an Augmented Reality capstone project which was featured in the university's innovation expo.
+                </p>
             </div>
         </div>
+
     </section>
 
-    <footer class="py-8 border-t border-white/10 glass">
+    <footer class="py-8 border-t border-white/10 glass bg-[#02000a]">
         <div class="max-w-7xl mx-auto px-6 text-center text-white/50 text-sm">
             <p>&copy; <span id="year"></span> Aniket Lamba. Building the Future.</p>
         </div>
     </footer>
 
-    <!-- Scripts -->
-    <script>
-        // Feather Icons
-        feather.replace();
-        document.getElementById('year').textContent = new Date().getFullYear();
-
-        // Start 3D experience function dummy
-        function startExperience() {
-            alert('🚀 Starting your 3D career journey! (This would load the React 3D experience in production)');
-        }
-
-        // Smooth Scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                const target = document.querySelector(targetId);
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
-
-        // Scroll Reveal Animation (Vanilla JS)
-        const revealElements = document.querySelectorAll('.reveal');
-        
-        const revealCallback = (entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    // Stop observing once animated
-                    observer.unobserve(entry.target);
-                }
-            });
-        };
-
-        const revealOptions = {
-            threshold: 0.1,
-            rootMargin: "0px 0px -50px 0px"
-        };
-
-        const revealObserver = new IntersectionObserver(revealCallback, revealOptions);
-        
-        revealElements.forEach(el => {
-            revealObserver.observe(el);
-        });
-    </script>
-
-    <!-- Three.js Cosmos Background Script -->
-    <script>
-        const canvas = document.getElementById('cosmos-bg');
-        
-        // Scene setup
-        const scene = new THREE.Scene();
-        // Fog for depth
-        scene.fog = new THREE.FogExp2(0x030014, 0.0015);
-
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-        camera.position.z = 400;
-
-        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // optimize performance
-
-        // Particle group
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 2000;
-        
-        const posArray = new Float32Array(particlesCount * 3);
-        const colorArray = new Float32Array(particlesCount * 3);
-
-        const colors = [
-            new THREE.Color('#00f3ff'), // neon cyan
-            new THREE.Color('#0077ff'), // electric blue
-            new THREE.Color('#b537f2'), // purple
-            new THREE.Color('#ffffff')  // white
-        ];
-
-        for(let i = 0; i < particlesCount * 3; i+=3) {
-            // Spread particles across a wide space
-            posArray[i] = (Math.random() - 0.5) * 2000;     // x
-            posArray[i+1] = (Math.random() - 0.5) * 2000;   // y
-            posArray[i+2] = (Math.random() - 0.5) * 2000;   // z
-
-            // Random colors from the palette
-            const randColor = colors[Math.floor(Math.random() * colors.length)];
-            colorArray[i] = randColor.r;
-            colorArray[i+1] = randColor.g;
-            colorArray[i+2] = randColor.b;
-        }
-
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
-
-        // Create material
-        const particlesMaterial = new THREE.PointsMaterial({
-            size: 3,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.8,
-            blending: THREE.AdditiveBlending // makes stars glow
-        });
-
-        // Generate circular texture for particles programmatically (no external image)
-        const generateCircleTexture = () => {
-            const canvasRender = document.createElement('canvas');
-            canvasRender.width = 32;
-            canvasRender.height = 32;
-            const context = canvasRender.getContext('2d');
-            
-            const gradient = context.createRadialGradient(16, 16, 0, 16, 16, 16);
-            gradient.addColorStop(0, 'rgba(255,255,255,1)');
-            gradient.addColorStop(0.2, 'rgba(255,255,255,0.8)');
-            gradient.addColorStop(1, 'rgba(0,0,0,0)');
-            
-            context.fillStyle = gradient;
-            context.fillRect(0, 0, 32, 32);
-            
-            const texture = new THREE.CanvasTexture(canvasRender);
-            return texture;
-        };
-
-        particlesMaterial.map = generateCircleTexture();
-
-        const particleMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-        scene.add(particleMesh);
-
-        // Interaction state
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetX = 0;
-        let targetY = 0;
-        const windowHalfX = window.innerWidth / 2;
-        const windowHalfY = window.innerHeight / 2;
-
-        document.addEventListener('mousemove', (event) => {
-            mouseX = (event.clientX - windowHalfX);
-            mouseY = (event.clientY - windowHalfY);
-        });
-
-        // Responsive handling
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        // Animation loop
-        const clock = new THREE.Clock();
-
-        const animate = () => {
-            requestAnimationFrame(animate);
-            const elapsedTime = clock.getElapsedTime();
-
-            targetX = mouseX * 0.001;
-            targetY = mouseY * 0.001;
-
-            // Slow natural rotation
-            particleMesh.rotation.y += 0.0005;
-            particleMesh.rotation.x += 0.0002;
-
-            // Subtle mouse parallax
-            particleMesh.rotation.y += 0.05 * (targetX - particleMesh.rotation.y);
-            particleMesh.rotation.x += 0.05 * (targetY - particleMesh.rotation.x);
-
-            // Floating effect
-            particleMesh.position.y = Math.sin(elapsedTime * 0.5) * 10;
-
-            renderer.render(scene, camera);
-        };
-
-        animate();
-    </script>
+    <!-- External Script -->
+    <script src="main.js"></script>
 </body>
 </html>
